@@ -1,0 +1,110 @@
+{
+	"info": {
+		"_postman_id": "914b2549-685d-436f-97b6-0771fc959c83",
+		"name": "Postman Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Books",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5050/users/{{USERNAME}}/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5050",
+					"path": [
+						"users",
+						"{{USERNAME}}",
+						"books"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{TOKEN}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "Authorization",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"const _headers = {'Content-Type': 'application/json'}",
+					"const _username = pm.variables.get(\"USERNAME\")",
+					"",
+					"pm.sendRequest({",
+					"    url: \"http://localhost:4040/token\",",
+					"    method: \"POST\",",
+					"    header: _headers,",
+					"    body: JSON.stringify({\"username\": _username})",
+					"},(err, response) => {",
+					"    console.log(\"response text\", response.text(),[\"token\"])",
+					"    let data = JSON.parse(response.text())",
+					"    if (err != null) {",
+					"        console.error(err)",
+					"        return",
+					"    }",
+					"    console.log(data[\"token\"])",
+					"    pm.collectionVariables.set(\"TOKEN\", data[\"token\"]);",
+					"})"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "USERNAME",
+			"value": "mary",
+			"type": "default"
+		},
+		{
+			"key": "TOKEN",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
